@@ -1,0 +1,285 @@
+{
+  "nycFatalities": {
+    "byYear": [
+      {
+        "year": 2019,
+        "deaths": 220
+      },
+      {
+        "year": 2020,
+        "deaths": 243
+      },
+      {
+        "year": 2021,
+        "deaths": 273
+      },
+      {
+        "year": 2022,
+        "deaths": 255
+      },
+      {
+        "year": 2023,
+        "deaths": 253
+      },
+      {
+        "year": 2024,
+        "deaths": 231
+      },
+      {
+        "year": 2025,
+        "deaths": 250,
+        "note": "Projected from partial year"
+      },
+      {
+        "year": 2026,
+        "deaths": 132,
+        "note": "Projected from 44 YTD"
+      }
+    ],
+    "fatalitySource": "NYC Open Data — NYPD Motor Vehicle Collisions",
+    "delayStart": "2025-08-01",
+    "causeBreakdown": {
+      "speeding": 0.18,
+      "failureToYield": 0.26,
+      "distraction": 0.14,
+      "other": 0.42
+    }
+  },
+  "nycInjuries": {
+    "byYear": [
+      {
+        "year": 2019,
+        "pedestrian": 10568,
+        "cyclist": 4986,
+        "motorist": 45836
+      },
+      {
+        "year": 2020,
+        "pedestrian": 6691,
+        "cyclist": 5576,
+        "motorist": 32347
+      },
+      {
+        "year": 2021,
+        "pedestrian": 7502,
+        "cyclist": 4961,
+        "motorist": 37190
+      },
+      {
+        "year": 2022,
+        "pedestrian": 8973,
+        "cyclist": 5027,
+        "motorist": 35541
+      },
+      {
+        "year": 2023,
+        "pedestrian": 9075,
+        "cyclist": 5178,
+        "motorist": 37587
+      },
+      {
+        "year": 2024,
+        "pedestrian": 9615,
+        "cyclist": 5150,
+        "motorist": 37429
+      },
+      {
+        "year": 2025,
+        "pedestrian": 9133,
+        "cyclist": 5358,
+        "motorist": 33731,
+        "note": "Projected from partial year"
+      },
+      {
+        "year": 2026,
+        "pedestrian": 6615,
+        "cyclist": 2055,
+        "motorist": 21156,
+        "note": "Projected from YTD"
+      }
+    ]
+  },
+  "waymoSafety": {
+    "injuryCrashReduction": 0.85,
+    "pedestrianInjuryReduction": 0.92,
+    "intersectionCrashReduction": 0.96,
+    "conservativeVMTShare": 0.02,
+    "waymoRideshareShare": 0.22,
+    "waymoRideshareShareSource": "Waymo reached ~22% of the San Francisco rideshare market by end of 2024",
+    "milesAnalyzed": "7.1 million",
+    "rideHailVMTShare": {
+      "nyc": 0.09,
+      "sf": 0.128,
+      "source": "Fehr & Peers (2019)",
+      "sourceUrl": "https://www.prnewswire.com/news-releases/new-study-finds-over-97-of-vehicle-miles-traveled-in-major-us-cities-are-completed-by-personal-and-commercial-vehicles-300896095.html",
+      "note": "Ride-hail share of city-core VMT. The 2.0% effective VMT share is derived from NYC ride-hail VMT (~9%, Open Plans/Streetsblog 2023) x observed Waymo rideshare penetration in SF (~22%)."
+    },
+    "rideHailSafetyComparison": {
+      "waymo": {
+        "accidentsPerMillionMiles": 0.02,
+        "metric": "serious injuries per million miles",
+        "source": "Kusano et al., Traffic Injury Prevention (2025), 56.7M miles"
+      },
+      "uber": {
+        "accidentsPerMillionMiles": 0.45,
+        "fatalitiesPer100MVMT": 0.87,
+        "metric": "accidents per million miles",
+        "source": "Uber Safety Report (2021-2022)"
+      },
+      "lyft": {
+        "accidentsPerMillionMiles": 0.38,
+        "fatalitiesPer100MVMT": 0.85,
+        "metric": "accidents per million miles",
+        "source": "Lyft Safety Report (2021-2022)"
+      },
+      "nationalAverage": {
+        "fatalitiesPer100MVMT": 1.35,
+        "source": "NHTSA FARS"
+      },
+      "caveat": "Methodologies differ across these sources. Waymo data uses police-reported incidents matched to location baselines; Uber/Lyft figures are self-reported. Direct comparison should be interpreted with caution."
+    },
+    "studies": [
+      {
+        "name": "Kusano et al. (2024)",
+        "journal": "Traffic Injury Prevention",
+        "finding": "85% fewer any-injury-reported crashes over 7.1M autonomous miles",
+        "url": "https://doi.org/10.1080/15389588.2024.2380786"
+      },
+      {
+        "name": "Kusano et al. (2025)",
+        "journal": "Traffic Injury Prevention",
+        "finding": "85% fewer suspected serious injury+ crashes, 79% fewer any-injury-reported crashes over 56.7M miles",
+        "url": "https://doi.org/10.1080/15389588.2025.2499887"
+      },
+      {
+        "name": "Swiss Re / Waymo (2024)",
+        "journal": "Swiss Re Institute",
+        "finding": "Waymo vehicles had zero bodily injury claims vs. human baseline",
+        "url": "https://www.swissre.com/institute/research/topics-and-risk-dialogues/digital-business-model-and-cyber-risk/autonomous-vehicles-waymo-insurance.html"
+      }
+    ]
+  },
+  "permitTimeline": [
+    {
+      "city": "Los Angeles, CA",
+      "testStart": "2023-03",
+      "commercialLaunch": "2024-03",
+      "months": 12,
+      "status": "approved"
+    },
+    {
+      "city": "Austin, TX",
+      "testStart": "2024-01",
+      "commercialLaunch": "2025-04",
+      "months": 15,
+      "status": "approved"
+    },
+    {
+      "city": "Atlanta, GA",
+      "testStart": "2025-01",
+      "commercialLaunch": "2025-06",
+      "months": 5,
+      "status": "approved"
+    },
+    {
+      "city": "Miami, FL",
+      "testStart": "2025-07",
+      "commercialLaunch": "2026-01",
+      "months": 6,
+      "status": "approved"
+    },
+    {
+      "city": "New York, NY",
+      "testStart": "2025-08",
+      "commercialLaunch": null,
+      "months": 9,
+      "status": "waiting",
+      "note": "Testing with safety drivers only — Governor blocked commercial operations"
+    }
+  ],
+  "timeline": [
+    {
+      "date": "Aug 2025",
+      "event": "NYC DOT grants Waymo first AV testing permit",
+      "detail": "Up to 8 Jaguar I-PACEs in Manhattan and Downtown Brooklyn, safety driver required",
+      "cumulativeDeaths": 0
+    },
+    {
+      "date": "Oct 2025",
+      "event": "Testing permit extended through end of 2025",
+      "detail": "Limited testing continues — no public ride-hail service allowed",
+      "cumulativeDeaths": 42
+    },
+    {
+      "date": "Jan 2026",
+      "event": "Governor Hochul proposes robotaxis statewide — except NYC",
+      "detail": "NYC explicitly excluded from commercial AV operations",
+      "cumulativeDeaths": 104
+    },
+    {
+      "date": "Feb 2026",
+      "event": "Governor withdraws robotaxi proposal entirely",
+      "detail": "Labor opposition from taxi unions kills even the statewide plan",
+      "cumulativeDeaths": 125
+    },
+    {
+      "date": "Mar 2026",
+      "event": "Testing permit expires",
+      "detail": "No legal path to commercial AV service exists in NYC",
+      "cumulativeDeaths": 146
+    },
+    {
+      "date": "Apr 2026",
+      "event": "Still blocked — the most restrictive major US city",
+      "detail": "No legislation, no commercial permit, no driverless operations allowed",
+      "cumulativeDeaths": 169
+    }
+  ],
+  "sources": [
+    {
+      "name": "NHTSA FARS",
+      "description": "Fatality Analysis Reporting System — national traffic fatality data",
+      "url": "https://www.nhtsa.gov/research-data/fatality-analysis-reporting-system-fars"
+    },
+    {
+      "name": "NYC Open Data — Motor Vehicle Collisions",
+      "description": "NYPD motor vehicle collision and fatality data, updated daily",
+      "url": "https://data.cityofnewyork.us/Public-Safety/Motor-Vehicle-Collisions-Crashes/h9gi-nx95"
+    },
+    {
+      "name": "NYC Vision Zero",
+      "description": "New York City traffic safety initiative and crash data",
+      "url": "https://www.nyc.gov/content/visionzero/pages/"
+    },
+    {
+      "name": "Kusano et al. (2024)",
+      "description": "Peer-reviewed study: 85% fewer any-injury-reported crashes in 7.1M Waymo miles",
+      "url": "https://doi.org/10.1080/15389588.2024.2380786"
+    },
+    {
+      "name": "Swiss Re / Waymo Insurance Study (2024)",
+      "description": "Zero bodily injury claims for Waymo fleet vs. human baseline",
+      "url": "https://www.swissre.com/institute/research/topics-and-risk-dialogues/digital-business-model-and-cyber-risk/autonomous-vehicles-waymo-insurance.html"
+    },
+    {
+      "name": "Fehr & Peers Ride-Hail VMT Study (2019)",
+      "description": "Ride-hail accounts for 1-13% of city-core VMT across major US cities",
+      "url": "https://www.prnewswire.com/news-releases/new-study-finds-over-97-of-vehicle-miles-traveled-in-major-us-cities-are-completed-by-personal-and-commercial-vehicles-300896095.html"
+    },
+    {
+      "name": "Kusano et al. (2025) — 56.7M Miles",
+      "description": "Updated peer-reviewed study: 85% fewer suspected serious injury+ crashes over 56.7M Waymo miles",
+      "url": "https://doi.org/10.1080/15389588.2025.2499887"
+    },
+    {
+      "name": "YipitData / App Economy Insights — Waymo SF Market Share",
+      "description": "Waymo reached ~22% of the San Francisco rideshare market by end of 2024 (YipitData via a16z)",
+      "url": "https://www.appeconomyinsights.com/p/waymo-rideshare-revolution"
+    },
+    {
+      "name": "NYC DOT AV Testing Permit Announcement",
+      "description": "Mayor Adams and DOT announce approval of first autonomous vehicle testing application",
+      "url": "https://www.nyc.gov/office-of-the-mayor/news/632-25/mayor-adams-dot-approval-first-application-test-autonomous-vehicles-new-york-city"
+    }
+  ]
+}

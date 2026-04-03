@@ -1,0 +1,192 @@
+---
+import data from '../data/fatalities.json';
+
+const years = data.nycFatalities.byYear;
+const injuries = data.nycInjuries.byYear;
+const maxDeaths = Math.max(...years.map(y => y.deaths));
+const injByYear = injuries.filter(y => y.year >= 2019 && y.year <= 2025).map(y => ({
+  year: y.year,
+  total: y.pedestrian + y.cyclist + y.motorist,
+  pedestrian: y.pedestrian,
+  cyclist: y.cyclist,
+  motorist: y.motorist,
+  note: y.note,
+}));
+const maxInjuries = Math.max(...injByYear.map(y => y.total));
+const waymo = data.waymoSafety;
+const rideHailSafety = waymo.rideHailSafetyComparison;
+const vmt = waymo.conservativeVMTShare;
+
+// 2024 baseline
+const deaths2024 = years.find(y => y.year === 2024);
+const inj2024 = injuries.find(y => y.year === 2024);
+
+const fmt = (n: number) => n < 1 ? n.toFixed(1) : Math.round(n).toLocaleString();
+
+// Full deployment
+const fullDeaths = deaths2024 ? deaths2024.deaths * waymo.injuryCrashReduction : 0;
+const fullPed = inj2024 ? inj2024.pedestrian * waymo.pedestrianInjuryReduction : 0;
+const fullCyc = inj2024 ? inj2024.cyclist * waymo.injuryCrashReduction : 0;
+const fullMot = inj2024 ? inj2024.motorist * waymo.injuryCrashReduction : 0;
+
+// Conservative (2% VMT)
+const conDeaths = fullDeaths * vmt;
+const conPed = fullPed * vmt;
+const conCyc = fullCyc * vmt;
+const conMot = fullMot * vmt;
+const conTotal = conDeaths + conPed + conCyc + conMot;
+---
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">The Data</h2>
+    <p class="section-subtitle">Waymo's safety record applied to NYC</p>
+
+    <div class="data-grid">
+      <div class="data-panel">
+        <h3>NYC Traffic Fatalities (2019–2025)</h3>
+        <div class="bar-chart">
+          {years.filter(y => y.year >= 2019 && y.year <= 2025).map(y => (
+            <div class="bar-row">
+              <span class="bar-year">{y.year}</span>
+              <div class="bar-track">
+                <div
+                  class={`bar-fill ${y.note ? 'projected' : ''}`}
+                  style={`width: ${(y.deaths / maxDeaths) * 100}%`}
+                />
+              </div>
+              <span class="bar-count">{y.deaths}{y.note ? '*' : ''}</span>
+            </div>
+          ))}
+        </div>
+        <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">
+          * 2025: projected from partial year; 2026: projected from YTD
+        </p>
+
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+          <h3>NYC Traffic Injuries (2019–2025)</h3>
+          <div class="bar-chart">
+            {injByYear.map(y => (
+              <div class="bar-row">
+                <span class="bar-year">{y.year}</span>
+                <div class="bar-track">
+                  <div class="bar-fill bar-fill-motorist" style={`width: ${(y.total / maxInjuries) * 100}%`} />
+                  <div class="bar-fill bar-fill-cyclist" style={`width: ${((y.pedestrian + y.cyclist) / maxInjuries) * 100}%`} />
+                  <div class={`bar-fill bar-fill-pedestrian ${y.note ? 'projected' : ''}`} style={`width: ${(y.pedestrian / maxInjuries) * 100}%`} />
+                </div>
+                <span class="bar-count">{y.total.toLocaleString()}{y.note ? '*' : ''}</span>
+              </div>
+            ))}
+          </div>
+          <div class="injury-legend">
+            <span><span class="legend-swatch" style="background: #e0a060;" /> Pedestrian</span>
+            <span><span class="legend-swatch" style="background: var(--blue);" /> Cyclist</span>
+            <span><span class="legend-swatch" style="background: var(--text-muted);" /> Motorist</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-panel">
+        <h3>Waymo Safety Reductions (Peer-Reviewed)</h3>
+
+        <div class="stat-row">
+          <span class="stat-label">Injury crash reduction</span>
+          <span class="stat-value green">-85%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Pedestrian injury reduction</span>
+          <span class="stat-value green">-92%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Intersection crash reduction</span>
+          <span class="stat-value green">-96%</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Miles analyzed</span>
+          <span class="stat-value">{waymo.milesAnalyzed}</span>
+        </div>
+
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
+          <h3 style="margin-bottom: 16px;">Applied to NYC (annual, based on 2024, 2.0% VMT share)</h3>
+          <div class="stat-row">
+            <span class="stat-label">Deaths prevented/year</span>
+            <span class="stat-value highlight">{fmt(conDeaths)}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Pedestrian injuries prevented/year</span>
+            <span class="stat-value" style="color: #e0a060;">{fmt(conPed)}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Cyclist injuries prevented/year</span>
+            <span class="stat-value" style="color: var(--blue);">{fmt(conCyc)}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Motorist injuries prevented/year</span>
+            <span class="stat-value">{fmt(conMot)}</span>
+          </div>
+          <div class="stat-row" style="border-top: 2px solid var(--border); margin-top: 4px; padding-top: 12px;">
+            <span class="stat-label" style="font-weight: 600; color: var(--text);">Total people spared/year</span>
+            <span class="stat-value" style="color: var(--yellow); font-size: 1.2rem;">{fmt(conTotal)}</span>
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 8px;">
+            2.0% effective VMT share = NYC ride-hail VMT (~9.0%, Open Plans / Streetsblog 2023)
+            &times; observed Waymo rideshare penetration in SF (~22%).
+          </p>
+        </div>
+
+        <div style="margin-top: 16px;">
+          {waymo.studies.map(study => (
+            <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 4px;">
+              Source: <a href={study.url} target="_blank" rel="noopener">{study.name}</a>
+              — {study.finding}
+            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="data-panel" style="margin-top: 32px;">
+      <h3>Ride-Hail Safety Comparison</h3>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Incident rates across ride-hail providers and national baseline
+      </p>
+      <table class="city-comparison-table">
+        <thead>
+          <tr>
+            <th>Provider</th>
+            <th>Metric</th>
+            <th>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color: var(--green); font-weight: 600;">Waymo</td>
+            <td>Serious injuries / million miles</td>
+            <td style="color: var(--green);">{rideHailSafety.waymo.accidentsPerMillionMiles}</td>
+          </tr>
+          <tr>
+            <td>Uber</td>
+            <td>Accidents / million miles</td>
+            <td>{rideHailSafety.uber.accidentsPerMillionMiles}</td>
+          </tr>
+          <tr>
+            <td>Lyft</td>
+            <td>Accidents / million miles</td>
+            <td>{rideHailSafety.lyft.accidentsPerMillionMiles}</td>
+          </tr>
+          <tr>
+            <td>National avg.</td>
+            <td>Fatalities / 100M VMT</td>
+            <td style="color: var(--orange);">{rideHailSafety.nationalAverage.fatalitiesPer100MVMT}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 12px;">
+        {rideHailSafety.caveat}
+      </p>
+      <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">
+        Sources: {rideHailSafety.waymo.source} &middot; {rideHailSafety.uber.source} &middot; {rideHailSafety.lyft.source} &middot; {rideHailSafety.nationalAverage.source}
+      </p>
+    </div>
+  </div>
+</section>

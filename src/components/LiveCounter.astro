@@ -1,0 +1,160 @@
+---
+import data from '../data/fatalities.json';
+
+const yearlyDeaths = data.nycFatalities.byYear;
+const yearlyInjuries = data.nycInjuries.byYear;
+const waymo = data.waymoSafety;
+const vmtShare = waymo.conservativeVMTShare;
+const delayStart = data.nycFatalities.delayStart;
+
+// Category reduction rates
+const reductions = {
+  deaths: waymo.injuryCrashReduction,         // 0.85
+  pedestrian: waymo.pedestrianInjuryReduction, // 0.92
+  cyclist: waymo.injuryCrashReduction,         // 0.85
+  motorist: waymo.injuryCrashReduction,        // 0.85
+};
+---
+
+<section class="hero">
+  <h1>NYC Autonomous Vehicle Delay Dashboard</h1>
+
+  <div class="counter-wrapper">
+    <div class="counter-label">Estimated preventable deaths & injuries since Aug 1, 2025</div>
+    <div class="counter-value" id="main-counter">--</div>
+    <div class="counter-sublabel">
+      Based on peer-reviewed crash-reduction research and a 2.0% effective VMT-share assumption
+      (<a href="https://doi.org/10.1080/15389588.2024.2380786" target="_blank" rel="noopener" style="color: var(--text-muted);">Kusano et al.</a>)
+    </div>
+  </div>
+
+  <div class="counter-breakdown">
+    <div class="breakdown-row primary">
+      <div class="breakdown-card deaths">
+        <div class="breakdown-label">Preventable deaths</div>
+        <div class="breakdown-value" id="counter-deaths">--</div>
+        <div class="breakdown-detail">85% crash reduction</div>
+      </div>
+      <div class="breakdown-card injuries-total">
+        <div class="breakdown-label">Total injuries prevented</div>
+        <div class="breakdown-value" id="counter-injuries-total">--</div>
+        <div class="breakdown-detail">Pedestrian + cyclist + motorist</div>
+      </div>
+    </div>
+    <div class="breakdown-row secondary">
+      <div class="breakdown-card pedestrian">
+        <div class="breakdown-label">Pedestrian injuries</div>
+        <div class="breakdown-value" id="counter-pedestrian">--</div>
+        <div class="breakdown-detail">92% reduction</div>
+      </div>
+      <div class="breakdown-card cyclist">
+        <div class="breakdown-label">Cyclist injuries</div>
+        <div class="breakdown-value" id="counter-cyclist">--</div>
+        <div class="breakdown-detail">85% reduction</div>
+      </div>
+      <div class="breakdown-card motorist">
+        <div class="breakdown-label">Motorist injuries</div>
+        <div class="breakdown-value" id="counter-motorist">--</div>
+        <div class="breakdown-detail">85% reduction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ yearlyDeaths, yearlyInjuries, reductions, vmtShare, delayStart }}>
+  const delayStartTime = new Date(delayStart).getTime();
+  const delayStartYear = new Date(delayStart).getFullYear();
+
+  // Build milestones for a yearly series
+  function buildMilestones(yearlyData, valueKey) {
+    const milestones = [];
+    let cumulative = 0;
+
+    for (const entry of yearlyData) {
+      if (entry.year < delayStartYear) continue;
+
+      const startOfYear = new Date(entry.year, 0, 1).getTime();
+      const endOfYear = new Date(entry.year + 1, 0, 1).getTime();
+      const value = typeof valueKey === 'function' ? valueKey(entry) : entry[valueKey];
+
+      if (entry.year === delayStartYear) {
+        milestones.push({ time: delayStartTime, value: 0 });
+        const fractionRemaining = (endOfYear - delayStartTime) / (endOfYear - startOfYear);
+        cumulative += value * fractionRemaining;
+        milestones.push({ time: endOfYear, value: cumulative });
+      } else {
+        milestones.push({ time: startOfYear, value: cumulative });
+        cumulative += value;
+      }
+    }
+
+    const lastEntry = yearlyData[yearlyData.length - 1];
+    const endOfLastYear = new Date(lastEntry.year + 1, 0, 1).getTime();
+    if (milestones.length && milestones[milestones.length - 1].time < endOfLastYear) {
+      milestones.push({ time: endOfLastYear, value: cumulative });
+    }
+
+    return milestones;
+  }
+
+  function interpolate(milestones, t) {
+    if (!milestones.length || t <= milestones[0].time) return 0;
+    if (t >= milestones[milestones.length - 1].time) {
+      return milestones[milestones.length - 1].value;
+    }
+    for (let i = 0; i < milestones.length - 1; i++) {
+      if (t >= milestones[i].time && t < milestones[i + 1].time) {
+        const progress = (t - milestones[i].time) / (milestones[i + 1].time - milestones[i].time);
+        return milestones[i].value + progress * (milestones[i + 1].value - milestones[i].value);
+      }
+    }
+    return 0;
+  }
+
+  // Build milestones for each category
+  const deathMilestones = buildMilestones(yearlyDeaths, 'deaths');
+  const pedMilestones = buildMilestones(yearlyInjuries, 'pedestrian');
+  const cycMilestones = buildMilestones(yearlyInjuries, 'cyclist');
+  const motMilestones = buildMilestones(yearlyInjuries, 'motorist');
+
+  // DOM refs
+  const elMain = document.getElementById('main-counter');
+  const elDeaths = document.getElementById('counter-deaths');
+  const elInjTotal = document.getElementById('counter-injuries-total');
+  const elPed = document.getElementById('counter-pedestrian');
+  const elCyc = document.getElementById('counter-cyclist');
+  const elMot = document.getElementById('counter-motorist');
+
+  function fmt(n) {
+    if (n < 1) return n.toFixed(1);
+    if (n >= 1000) return Math.round(n).toLocaleString();
+    return Math.round(n).toString();
+  }
+
+  function updateCounter() {
+    const t = Date.now();
+
+    const rawDeaths = interpolate(deathMilestones, t);
+    const rawPed = interpolate(pedMilestones, t);
+    const rawCyc = interpolate(cycMilestones, t);
+    const rawMot = interpolate(motMilestones, t);
+
+    const prevDeaths = rawDeaths * reductions.deaths * vmtShare;
+    const prevPed = rawPed * reductions.pedestrian * vmtShare;
+    const prevCyc = rawCyc * reductions.cyclist * vmtShare;
+    const prevMot = rawMot * reductions.motorist * vmtShare;
+    const prevInjTotal = prevPed + prevCyc + prevMot;
+    const prevTotal = prevDeaths + prevInjTotal;
+
+    elMain.textContent = fmt(prevTotal);
+    elDeaths.textContent = fmt(prevDeaths);
+    elInjTotal.textContent = fmt(prevInjTotal);
+    elPed.textContent = fmt(prevPed);
+    elCyc.textContent = fmt(prevCyc);
+    elMot.textContent = fmt(prevMot);
+
+    requestAnimationFrame(updateCounter);
+  }
+
+  requestAnimationFrame(updateCounter);
+</script>
