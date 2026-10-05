@@ -32,7 +32,7 @@
       },
       {
         "year": 2026,
-        "deaths": 91,
+        "deaths": 82,
         "note": "Projected from 68 YTD"
       }
     ],
@@ -92,9 +92,9 @@
       },
       {
         "year": 2026,
-        "pedestrian": 5169,
-        "cyclist": 2587,
-        "motorist": 19052,
+        "pedestrian": 4652,
+        "cyclist": 2328,
+        "motorist": 17147,
         "note": "Projected from YTD"
       }
     ]
@@ -192,7 +192,7 @@
       "city": "New York, NY",
       "testStart": "2025-08",
       "commercialLaunch": null,
-      "months": 13,
+      "months": 14,
       "status": "waiting",
       "note": "Testing with safety drivers only — Governor blocked commercial operations"
     }
@@ -229,7 +229,7 @@
       "cumulativeDeaths": 146
     },
     {
-      "date": "Sep 2026",
+      "date": "Oct 2026",
       "event": "Still blocked — the most restrictive major US city",
       "detail": "No legislation, no commercial permit, no driverless operations allowed",
       "cumulativeDeaths": 172
