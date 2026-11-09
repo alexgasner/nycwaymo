@@ -32,8 +32,8 @@
       },
       {
         "year": 2026,
-        "deaths": 205,
-        "note": "Projected from 188 YTD"
+        "deaths": 213,
+        "note": "Projected from 195 YTD"
       }
     ],
     "fatalitySource": "NYC Open Data — NYPD Motor Vehicle Collisions",
@@ -92,9 +92,9 @@
       },
       {
         "year": 2026,
-        "pedestrian": 7828,
-        "cyclist": 4359,
-        "motorist": 29285,
+        "pedestrian": 8219,
+        "cyclist": 4551,
+        "motorist": 30328,
         "note": "Projected from YTD"
       }
     ]
@@ -232,7 +232,7 @@
       "date": "Nov 2026",
       "event": "Still blocked — the most restrictive major US city",
       "detail": "No legislation, no commercial permit, no driverless operations allowed",
-      "cumulativeDeaths": 292
+      "cumulativeDeaths": 299
     }
   ],
   "sources": [
